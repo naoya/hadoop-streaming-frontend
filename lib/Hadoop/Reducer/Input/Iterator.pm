@@ -17,7 +17,6 @@ has current_key => (
 
 sub has_next {
     my $self = shift;
-    return if $self->input->handle->eof;
     return if not defined $self->input->next_key;
     1;
 }
@@ -25,18 +24,22 @@ sub has_next {
 sub next {
     my $self = shift;
 
-    if (not defined $self->current_key or $self->current_key ne $self->input->next_key) {
-        my ($key, $value) = $self->input->each;
-        $self->current_key($key);
-        return $self->retval($key, $value);
+    if ( not defined $self->current_key ) {
+        $self->current_key($self->input->next_key);
+        return $self->retval( $self->current_key );
+    }
+
+    if ($self->current_key ne $self->input->next_key) {
+        $self->current_key($self->input->next_key);
+        return $self->retval( $self->current_key );
     }
 
     my ($key, $value);
     do {
-        ($value, $value) = $self->input->each or return;
+        ($key, $value) = $self->input->each or return;
     } while ($self->current_key eq $key);
-
     $self->current_key( $key );
+
     return $self->retval($key, $value);
 }
 

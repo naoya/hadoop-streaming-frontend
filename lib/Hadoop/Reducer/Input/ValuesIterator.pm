@@ -14,8 +14,9 @@ has first => (
 
 sub has_next {
     my $self = shift;
-    $self->input_iter->input->next_key or return;
-    $self->input_iter->current_key eq $self->input_iter->input->next_key;
+    return 1 if $self->first;
+    return unless defined $self->input_iter->input->next_key;
+    return $self->input_iter->current_key eq $self->input_iter->input->next_key ? 1 : 0;
 }
 
 sub next {

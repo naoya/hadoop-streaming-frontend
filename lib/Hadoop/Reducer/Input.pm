@@ -16,7 +16,6 @@ sub next_key {
     my $self = shift;
     my $line = $self->buffer ? $self->buffer : $self->next_line;
     return if not defined $line;
-
     my ($key, $value) = split /\t/, $line;
     return $key;
 }
@@ -24,7 +23,6 @@ sub next_key {
 sub next_line {
     my $self = shift;
     return if $self->handle->eof;
-
     $self->buffer( $self->handle->getline );
     $self->buffer;
 }
