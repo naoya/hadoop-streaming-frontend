@@ -19,7 +19,12 @@ sub run {
 
     while ($iter->has_next) {
         my ($key, $values_iter) = $iter->next or last;
-        $self->reduce( $key => $values_iter );
+        eval {
+            $self->reduce( $key => $values_iter );
+        };
+        if ($@) {
+            warn $@;
+        }
     }
 }
 
